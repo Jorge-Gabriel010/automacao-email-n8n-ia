@@ -1,0 +1,149 @@
+{
+  "name": "Automação Inteligente de E-mails",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "fac4fa19-f5ca-458f-81a9-b6954ee9d8b6",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"nome\": \"João da Silva\",\n  \"email\": \"jorge010dados@gmail.com\",\n  \"assunto\": \"Solicitação de orçamento\",\n  \"mensagem\": \"Gostaria de saber o valor e o prazo para realizar o serviço.\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "6290bebd-903c-4c95-a5fc-bb171b4f89bf",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um assistente de atendimento ao cliente.\n\nSua tarefa é criar uma resposta profissional para o cliente.\n\nNome do cliente:\n{{ $json.nome }}\n\nAssunto:\n{{ $json.assunto }}\n\nMensagem recebida:\n{{ $json.mensagem }}\n\nCrie uma resposta educada, objetiva e profissional.\n\nNão invente informações sobre preços, prazos ou condições que não estejam presentes na mensagem.\n\nRetorne somente o texto que deverá ser enviado ao cliente.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        448,
+        0
+      ],
+      "id": "61e5a194-918e-47b7-8ba8-29ca07e6be3c",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        384,
+        208
+      ],
+      "id": "9f32c093-4905-45d4-bfe9-a2e66a2c1bae",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Edit Fields').item.json.email }}",
+        "subject": "=Re: {{ $('Edit Fields').item.json.assunto }}",
+        "message": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        816,
+        0
+      ],
+      "id": "5f53812d-de6f-45c6-a54f-6a861714aa35",
+      "name": "Send a message",
+      "webhookId": "42fe68d1-70d8-4551-83cd-4d834fcc5c21",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "09jeonT8PutRpqmA",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "3397ea57-0aa2-4b81-8e27-b2cf41025782",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f71145f5750d0a7e37fb4e39e05f92b5a8c1f71551144d8a829ff91bd16df5d9"
+  },
+  "nodeGroups": [],
+  "id": "YCe8SFg48JmVYXy9",
+  "tags": []
+}
