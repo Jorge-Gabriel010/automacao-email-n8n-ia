@@ -60,4 +60,4 @@ Estudante de Ciência de Dados, interessado em Análise de Dados, Business Intel
 
 - [GitHub](https://github.com/Jorge-Gabriel010)
 - [LinkedIn](https://www.linkedin.com/in/jorge-gabriel-884a38413/)
-- [Portfólio](https://Jorge-Gabriel010.github.io)
+- [Portfólio](https://jorge-gabriel010.github.io/)
